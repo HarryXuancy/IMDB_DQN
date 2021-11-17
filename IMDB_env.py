@@ -16,21 +16,21 @@ class environment():
         index2 = [i for i in range(12500,25000)]
         #抽样少量样本
         index2 = random.sample(index2,NEGTIVE_SIZE)
-        index_train = index1.extend(index2)
+        index_train = index1 + index2
         index_test = list(range(25000))
         #读标号
-        test_data = self.load_data('aclImdb', flag='test')
-        train_data = self.load_data('aclImdb')
+        test_data = self.load_data('C:/Users/13357/Desktop/aclImdb', flag = 'test')
+        train_data = self.load_data('C:/Users/13357/Desktop/aclImdb')
         train_data = [train_data[i] for i in index_train]
         #test_data = [test_data[i] for i in index_test]
         #加载文件
-        sentence_code_1 = np.load('sentence_code_1.npy', allow_pickle=True)
+        sentence_code_1 = np.load('E:\IMDB\data\sentence_code_1.npy', allow_pickle=True)
         sentence_code_1 = sentence_code_1.tolist()
         sentence_code_1 = [sentence_code_1[i] for i in index_train]
-        sentence_code_2 = np.load('sentence_code_2.npy', allow_pickle=True)
+        sentence_code_2 = np.load('E:\IMDB\data\sentence_code_2.npy', allow_pickle=True)
         sentence_code_2 = sentence_code_2.tolist()
         sentence_code_2 = [sentence_code_2[i] for i in index_test]
-        vocabulary_vectors = np.load('vocabulary_vectors_1.npy', allow_pickle=True)
+        vocabulary_vectors = np.load('E:\IMDB\data/vocabulary_vectors_1.npy', allow_pickle=True)
         vocabulary_vectors = vocabulary_vectors.tolist()
         #转化为词向量
         for i in range(POSITIVE_SIZE + NEGTIVE_SIZE):
@@ -43,27 +43,27 @@ class environment():
         self.train_label = np.array([train_data[i][1] for i in range(POSITIVE_SIZE + NEGTIVE_SIZE)]) #样本数*1
         self.test_list = np.array(sentence_code_2)
         self.test_label = np.array([test_data[i][1] for i in range(25000)])
-        self.s = random.randint(0,POSITIVE_SIZE + NEGTIVE_SIZE-1)
+        self.s = random.randint(0,POSITIVE_SIZE + NEGTIVE_SIZE - 1)
 
     def reset(self):
-        self.s = random.randint(0,POSITIVE_SIZE + NEGTIVE_SIZE-1)
+        self.s = random.randint(0,POSITIVE_SIZE + NEGTIVE_SIZE - 1)
         return self.train_list[self.s]
 
     def step(self,action):
         if self.s > POSITIVE_SIZE:
             if action == self.train_label[self.s]: 
-                self.s = random.randint(0,POSITIVE_SIZE + NEGTIVE_SIZE-1)
+                self.s = random.randint(0,POSITIVE_SIZE + NEGTIVE_SIZE - 1)
                 return self.train_list[self.s], 1, False
             else : return self.train_list[self.s], 0, True
         else:
             if action == self.train_label[self.s]: 
-                self.s = random.randint(0,POSITIVE_SIZE + NEGTIVE_SIZE-1)
+                self.s = random.randint(0,POSITIVE_SIZE + NEGTIVE_SIZE - 1)
                 return self.train_list[self.s], RATION, False
             else : 
-                self.s = random.randint(0,POSITIVE_SIZE + NEGTIVE_SIZE-1)
+                self.s = random.randint(0,POSITIVE_SIZE + NEGTIVE_SIZE - 1)
                 return self.train_list[self.s], -RATION, False
 
-    def load_data(path, flag='train'):
+    def load_data(self, path, flag='train'):
         labels = ['pos', 'neg']
         data = []
         for label in labels:
