@@ -29,7 +29,7 @@ class RNN(nn.Module):
         out_relu = F.relu(out_fc1)
         out = self.fc2(out_relu)
         # 概率
-        return F.log_softmax(out, dim=-1)
+        return out
 
 class DQN():
     def __init__(
@@ -52,6 +52,7 @@ class DQN():
         self.batch_size = batch_size
         self.epsilon_increment = e_greedy_increment
         self.epsilon = 0 if e_greedy_increment is not None else self.epsilon_max
+        self.reward = 0
         
         #总学习步数
         self.learn_step = 0
